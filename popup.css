@@ -1,0 +1,14 @@
+body {
+    width: 200px;
+    padding: 10px;
+  }
+  
+  button {
+    margin-bottom: 10px;
+  }
+  
+  li {
+    cursor: pointer;
+    padding: 5px;
+  }
+  

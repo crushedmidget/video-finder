@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Video Finder",
+    "version": "1.0",
+    "description": "Find and download HTML5 videos on the page.",
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "permissions": ["activeTab"]
+  }
+  
