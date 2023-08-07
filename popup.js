@@ -5,7 +5,7 @@ const scanButton = document.getElementById("scanButton");
 scanButton.addEventListener("click", () => {
   console.log("Clicked scan button");
   // Get the current tab c
-  hrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  hrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs) => {
     // Send a message to the content script with a command
     chrome.tabs.sendMessage(tabs[0].id, { command: "scan" }, (response) => {
       // Handle the response from the content script
@@ -20,7 +20,7 @@ scanButton.addEventListener("click", () => {
 // Listen for messages from the content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Check if the message is from the content script
-  if (sender.tab) {
+  if (sender.tab && sender.origin === "chrome-extension://") {
     // Handle the message console.log(request);
     // Display the message in the popup
     const results = document.getElementById("results");
