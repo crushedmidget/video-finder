@@ -1,58 +1,29 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const scanButton = document.getElementById("scanButton");
-  const videoList = document.getElementById("videoList");
+// Get the scan button element
+const scanButton = document.getElementById("scanButton");
 
-  scanButton.addEventListener("click", function () {
-    console.log("Scan button clicked");
-    videoList.innerHTML = ""; // Clear previous list items
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs && tabs.length > 0) {
-        // The content script is automatically injected into the active tab.
-        // It will run automatically, and you'll receive the result via message passing.
-      } else {
-        console.error("No active tabs found.");
-      }
+// Add a click event listener
+scanButton.addEventListener("click", () => {
+  console.log("Clicked scan button");
+  // Get the current tab c
+  hrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    // Send a message to the content script with a command
+    chrome.tabs.sendMessage(tabs[0].id, { command: "scan" }, (response) => {
+      // Handle the response from the content script
+      console.log(response);
+      // Display the results in the popup
+      const results = document.getElementById("results");
+      results.innerHTML = response.message;
     });
   });
+});
 
-  // Function to scan the DOM for video elements
-  function scanForVideos() {
-    const videos = document.querySelectorAll("video");
-    console.log(videos);
-    const videoArray = Array.from(videos);
-
-    // Sort the videos by size in descending order
-    videoArray.sort(
-      (a, b) => b.videoWidth * b.videoHeight - a.videoWidth * a.videoHeight
-    );
-
-    const videoLinks = videoArray.map((video) => {
-      const source = video.currentSrc;
-      const resolution = `${video.videoWidth}x${video.videoHeight}`;
-      return { source, resolution };
-    });
-    console.log(videoLinks);
-
-    return videoLinks;
+// Listen for messages from the content script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  // Check if the message is from the content script
+  if (sender.tab) {
+    // Handle the message console.log(request);
+    // Display the message in the popup
+    const results = document.getElementById("results");
+    results.innerHTML = request.message;
   }
-
-  // Function to display the list of videos
-  function displayVideos(videoLinks) {
-    videoLinks.forEach((video) => {
-      const listItem = document.createElement("li");
-      listItem.textContent = `${video.resolution} - ${video.source}`;
-      listItem.addEventListener("click", function () {
-        // Trigger download when clicked
-        chrome.downloads.download({ url: video.source });
-      });
-      videoList.appendChild(listItem);
-    });
-  }
-
-  // Listen for messages from the content script
-  chrome.runtime.onMessage.addListener(function (message) {
-    if (message.action === "videoLinks") {
-      displayVideos(message.videoLinks);
-    }
-  });
 });
