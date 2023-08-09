@@ -20,7 +20,7 @@ scanButton.addEventListener("click", () => {
 // Listen for messages from the content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Check if the message is from the content script
-  if (sender.tab && sender.origin === "chrome-extension://") {
+  if (sender.tab && sender.origin = "chrome-extension://") {
     // Handle the message console.log(request);
     // Display the message in the popup
     const results = document.getElementById("results");
